@@ -1,0 +1,3 @@
+app_lucky_number:
+    path: /sitemap/crawler
+    controller: App\Controller\IndexController::crawl
