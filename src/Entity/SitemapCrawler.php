@@ -5,26 +5,63 @@ namespace App\Entity;
 
 class SitemapCrawler
 {
-    protected $task;
-    protected $dueDate;
+    protected $url;
 
-    public function getTask()
+    protected $tag;
+
+    protected $tagName;
+
+    protected $attribute;
+
+    protected $name;
+
+    public function getUrl()
     {
-        return $this->task;
+        return $this->url;
     }
 
-    public function setTask($task)
+    public function setUrl($url)
     {
-        $this->task = $task;
+        $this->url = $url;
     }
 
-    public function getDueDate()
+    public function getTag()
     {
-        return $this->dueDate;
+        return $this->tag;
     }
 
-    public function setDueDate(\DateTime $dueDate = null)
+    public function setTag($tag)
     {
-        $this->dueDate = $dueDate;
+        $this->tag = $tag;
+    }
+
+    public function getTagName()
+    {
+        return $this->tagName;
+    }
+
+    public function setTagName($tagName)
+    {
+        $this->tagName = $tagName;
+    }
+
+    public function getAttribute()
+    {
+        return $this->attribute;
+    }
+
+    public function setAttribute($attribute)
+    {
+        $this->attribute = $attribute;
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function setName($name)
+    {
+        $this->name = $name;
     }
 }

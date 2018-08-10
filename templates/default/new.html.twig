@@ -1,7 +1,23 @@
-<b>THE SITEMAP CRAWLER</b>
-<br/>
-<hr/>
-<br/>
-{{ form_start(form) }}
-{{ form_widget(form) }}
-{{ form_end(form) }}
+{% extends 'base.html.twig' %}
+
+{% set name_page = 'THE SITEMAP CRAWLER' %}
+{% block title %}{{ name_page }}{% endblock %}
+{% block title_body %}{{ name_page }}{% endblock %}
+
+{% block body %}
+    {{ form_start(form) }}
+    <div class="form-group">
+        {{ form_widget(form.url, { 'attr': {'class': 'form-control'} }) }}
+        <br/>
+        {{ form_widget(form.tag, { 'attr': {'class': 'form-control'} }) }}
+        <br/>
+        {{ form_widget(form.tagName, { 'attr': {'class': 'form-control'} }) }}
+        <br/>
+        {{ form_widget(form.attribute, { 'attr': {'class': 'form-control'} }) }}
+        <br/>
+        {{ form_widget(form.name, { 'attr': {'class': 'form-control'} }) }}
+        <br/>
+        {{ form_widget(form.submit, { 'attr': {'class': 'form-control btn btn-success'} }) }}
+    </div>
+    {{ form_end(form) }}
+{% endblock %}

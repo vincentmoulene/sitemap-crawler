@@ -6,61 +6,79 @@ use App\Entity\SitemapCrawler;
 use App\Form\SitemapCrawlerType;
 use DOMDocument;
 use DOMXPath;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 
 class IndexController extends Controller
 {
-    public function crawl($urlSitemap = NULL, $url = NULL)
+
+
+    public function crawl(Request $request)
     {
-//        $html = new DOMDocument();
-//        //@$html->loadHtmlFile('http://www.icn.ch/es/Mapa-del-Sitio-1.html');// Spanish
-//        @$html->loadHtmlFile($urlSitemap);
-//        $xpath = new DOMXPath( $html );
-//        $nodelist = $xpath->query( "//div[@class='contentpaneopen']" );
-//        foreach ($nodelist as $n){
-//            $arr = $n->getElementsByTagName("a");
-//            foreach($arr as $item) {
-//                $href =  $item->getAttribute("href");
-//                $text = trim(preg_replace("/[\r\n]+/", " ", $item->nodeValue));
-//                $links[$href][] = [
-//                    'href' => 'http://www.icn.ch' . $href,
-//                    'text' => $text
-//                ];
-//                echo $text . ';' . 'http://www.icn.ch' . $href . PHP_EOL;
-//            }
-//        }
-//
-
-//        $number = random_int(0, 100);
-//
-//        return new Response(
-//            '<html><body>Lucky number: '.$number.'</body></html>'
-//        );
-
-        // creates a task and gives it some dummy data for this example
         $sitemapCrawler = new SitemapCrawler();
-        $sitemapCrawler->setTask('Write a blog post');
-        $sitemapCrawler->setDueDate(new \DateTime('tomorrow'));
 
-        //$form = $this->createFormBuilder($task)
-        $form = $this->createForm(SitemapCrawlerType::class, $sitemapCrawler)
+        $form = $this->createForm(SitemapCrawlerType::class, $sitemapCrawler);
 
-            ->add('task', TextType::class)
-            ->add('dueDate', DateType::class)
-            ->add('save', SubmitType::class, array('label' => 'Create Task'));
-            //->getForm();
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Get datas.
+            $datas = $form->getData();
+            $urlSitemap = $datas->getUrl();
+            $tag = $datas->getTag();
+            $tagName = $datas->getTagName();
+            $attribute = $datas->getAttribute();
+            $name = $datas->getName();
+
+            // Prepare data to export.
+            $data = [];
+            // Headings and rows.
+            $headings = ['Url', 'Text'];
+            $data[] = $headings;
+
+            // Parsing.
+            $html = new DOMDocument();
+            @$html->loadHtmlFile($urlSitemap);
+            $xpath = new DOMXPath( $html );
+            $nodelist = $xpath->query($tag);
+            foreach ($nodelist as $n){
+                $arr = $n->getElementsByTagName($tagName);
+                foreach($arr as $item) {
+                    $url =  $item->getAttribute($attribute);
+                    $text = trim(preg_replace("/[\r\n]+/", " ", $item->nodeValue));
+                    $data[] = [
+                        'url' => $url,
+                        'text' => $text
+                    ];
+                }
+            }
+
+            // Generate an Excel file.
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+            $sheet->fromArray($data);
+
+            $writer = new Xlsx($spreadsheet);
+
+            ob_start();
+            $writer->save('php://output');
+            $excelContent = ob_get_contents();
+            ob_end_clean();
+
+            $response = new Response($excelContent, 200);
+            $response->headers->set('Content-Type', 'application/octet-stream; charset=utf-8; application/force-download');
+            $response->headers->set('Content-Disposition', 'attachment; filename="' . $name . '.xlsx"');
+
+            return $response;
+        }
 
         return $this->render('default/new.html.twig', array(
             'form' => $form->createView(),
         ));
-
-
     }
 
 }
