@@ -1,4 +1,4 @@
-# sitemap-crawler
+# Sitemap-crawler
 A symfony Sitemap crawler
 
 ## 🔧 Prerequisites
