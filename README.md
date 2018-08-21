@@ -1,4 +1,4 @@
-# sitemap-crawler
+# Sitemap-crawler
 A symfony Sitemap crawler
 
 ## 🔧 Prerequisites
@@ -12,3 +12,4 @@ don't forget to add bins to your path such:
   * php (7.2)
 
 ## Interface of the application
+![Interface](https://github.com/vints24/sitemap-crawler/new/master/public/interface.png)
