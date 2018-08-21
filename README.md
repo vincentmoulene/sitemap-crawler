@@ -12,4 +12,4 @@ don't forget to add bins to your path such:
   * php (7.2)
 
 ## Interface of the application
-![Interface](https://github.com/vints24/sitemap-crawler/new/master/public/interface.png)
+![Interface](https://github.com/vints24/sitemap-crawler/blob/master/public/interface.png)
